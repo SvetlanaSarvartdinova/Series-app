@@ -1,0 +1,56 @@
+version: "2.2.1"
+
+services:
+  postgres:
+    image: postgres:13.0
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=kartina098
+      - POSTGRES_DB=Seriesdb
+      - PG_DATA=/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - shared_network
+    volumes:
+      - /postgres-db:/var/lib/postgresql/data
+
+  api:
+    container_name: series_api
+    restart: always
+    image: series-api-prod:1.0.0
+    build:
+      context: server
+      target: production
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=kartina098
+      - POSTGRES_DB=Seriesdb
+      - POSTGRES_HOST=host.docker.internal
+    ports:
+      - 5000:5000
+    networks:
+      - shared_network
+    depends_on:
+      - postgres
+
+  client:
+    container_name: series_client
+    restart: always
+    image: series-client-prod:1.0.0
+    build:
+      context: client
+      target: production
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=kartina098
+      - POSTGRES_DB=Seriesdb
+    ports:
+      - 3000:3000
+    networks:
+      - shared_network
+    depends_on:
+      - api
+
+networks:
+  shared_network: 
