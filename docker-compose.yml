@@ -5,7 +5,7 @@ services:
     image: postgres:13.0
     restart: always
     environment:
-      - POSTGRES_PASSWORD=kartina098
+      - POSTGRES_PASSWORD=
       - POSTGRES_DB=Seriesdb
       - PG_DATA=/var/lib/postgresql/data
     ports:
